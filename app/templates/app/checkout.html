@@ -1,0 +1,84 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block content_checkout %}
+<div class="row" style="padding: 50px;">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            <form id="form">
+                <h3>Thông tin khách hàng</h3>
+                <hr>
+                <div id="user-info">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Tên</label>
+                        <input required class="form-control" type="text" id="name" name="name"
+                            placeholder="Enter your name..">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input required class="form-control" type="email" id="email" name="email"
+                            placeholder="Enter your email..">
+                    </div>
+                </div>
+
+                <h3>Thông tin vận chuyển</h3>
+                <hr>
+                <div id="shipping-info">
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Địa chỉ</label>
+                        <input class="form-control" type="text" id="address" name="address"
+                            placeholder="Enter your address..">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">Tỉnh /Thành phố</label>
+                            <input class="form-control" type="text" id="city" name="city"
+                                placeholder="Enter your city..">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="state" class="form-label">Trạng thái</label>
+                            <input class="form-control" type="text" id="state" name="state"
+                                placeholder="Enter your state..">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="zipcode" class="form-label">Zip Code</label>
+                            <input class="form-control" type="text" id="zipcode" name="zipcode"
+                                placeholder="Enter your zip code..">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Quốc gia</label>
+                            <input class="form-control" type="text" id="country" name="country"
+                                placeholder="Enter your country..">
+                        </div>
+                    </div>
+                </div>
+
+                <input id="form-button" class="btn btn-success btn-block" type="submit" value="Thanh toán">
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="box-element">
+            <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
+            <h3>Đơn hàng thanh toán</h3>
+            <hr>
+            <div class="cart-row mb-3" style="display: flex; margin-top: 20px; align-items: center">
+                <div class="col-2"><img class="row-image" src="{% static 'app/images/placeholder.png' %}" width="100px"
+                        height="100px"></div>
+                <div class="col-6">
+                    <p class="mb-0">Product 1</p>
+                </div>
+                <div class="col-2">
+                    <p class="mb-0">$20.00</p>
+                </div>
+                <div class="col-2">
+                    <p class="mb-0">x2</p>
+                </div>
+            </div>
+            <h5>Thanh toán: $4</h5>
+        </div>
+    </div>
+</div>
+{% endblock content_checkout %}
