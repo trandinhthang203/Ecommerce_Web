@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tạp Hóa</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="mt-5">
+        <div class="container">
+            <h1 class="mb-5">Cập nhật sản phẩm</h1>
+            <form method="post" action="/update/{{ item_product.id }}/" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Tên hàng hóa:</label>
+                    <input type="text" class="form-control" name="name" value="{{ item_product.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Mô tả:</label>
+                    <textarea class="form-control" name="description" rows="3">{{ item_product.description }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Giá:</label>
+                    <input type="number" step="1" class="form-control" name="price" value="{{ item_product.price }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Hình ảnh:</label>
+                    <input type="file" class="form-control-file" name="image" onchange="previewImage(event)">
+                    <img id="image-preview" src="{{ item_product.image.url }}" alt="Current Image" style="display:block; margin-top: 10px; max-height: 200px;">
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Trạng thái:</label>
+                    <select class="form-control" name="status">
+                        <option value="in_stock" {% if item_product.status == 'in_stock' %}selected{% endif %}>Còn hàng</option>
+                        <option value="out_of_stock" {% if item_product.status == 'out_of_stock' %}selected{% endif %}>Hết hàng</option>
+                        <option value="discontinued" {% if item_product.status == 'discontinued' %}selected{% endif %}>Ngừng kinh doanh</option>
+                    </select>
+                </div>
+                <a href="/list" class="btn btn-danger mr-1">Quay Lại</a>
+                <button type="submit" class="btn btn-info">Cập nhật</button>
+            </form>
+            
+        </div>
+    </div>
+    <!-- Scripts for Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('image-preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</body>
+
+</html>
