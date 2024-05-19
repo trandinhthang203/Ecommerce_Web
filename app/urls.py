@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
@@ -8,5 +10,10 @@ urlpatterns = [
     path('checkout/', views.checkout, name="checkout"),
     path('list/', views.product_list,name="product_list"),
     path('create/', views.product_create,name="product_create"),
-    path('update/<int:id>/', views.product_update,name="product_update")
+    path('update/<int:id>/', views.product_update,name="product_update"),
+    path('register/', views.register, name="register"),
+    path('login/', views.login, name="login"),
+    path('logout/', views.logout, name="logout"),
 ]
+
+urlpatterns = urlpatterns + static(settings.MEDIA_URL   , document_root=settings.MEDIA_ROOT)

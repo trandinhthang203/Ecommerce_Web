@@ -1,0 +1,62 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block register_content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>register</title>
+    <link rel="stylesheet" href="{% static 'app/css/register.css' %}">
+</head>
+<body>
+<main class="register-form">
+    <div class="container">
+        <div class="register-header">Register</div>
+        <div class="register-body">
+            <form action="" method="post">
+            {% csrf_token %}
+                <div class="register-infor">
+                    <label for="username" class="register-infor-text">Username</label>
+                    <input type="text" id="username" class="register-infor-input" name="username" required autofocus>
+                </div> 
+                <div class="register-infor">
+                    <label for="email" class="register-infor-text">Your Email</label>
+                    <input type="email" id="email" class="register-infor-input" name="email" required>
+                </div>
+                <div class="register-infor">
+                    <label for="name" class="register-infor-text">Your Name</label>
+                    <input type="name" id="name" class="register-infor-input" name="name" required>
+                </div>
+                <div class="register-infor">
+                    <label for="sex" class="register-infor-text">Your Sex</label>
+                    <input type="sex" id="sex" class="register-infor-input" name="sex" required>
+                </div>
+                <div class="register-infor">
+                    <label for="address" class="register-infor-text">Your Address</label>
+                    <input type="address" id="address" class="register-infor-input" name="address" required>
+                </div>
+                <div class="register-infor">
+                    <label for="phone" class="register-infor-text">Your Phone</label>
+                    <input type="phone" id="phone" class="register-infor-input" name="phone" required>
+                </div>
+                <div class="register-infor">
+                    <label for="password" class="register-infor-text">Password</label>
+                    <input type="password" id="password" class="register-infor-input" name="password" required>
+                </div>
+                <div class="register-infor">
+                    <label for="confirm_password" class="register-infor-text">Re-enter Password</label>
+                    <input type="password" id="confirm_password" class="register-infor-input" name="confirm_password" required>
+                </div>
+
+                <div class="register-btn">
+                    <input type="submit" class="register-btn-register" name="Register">
+                </div> 
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+{% endblock register_content %}
+

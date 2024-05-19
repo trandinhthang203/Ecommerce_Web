@@ -1,0 +1,48 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block login_content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'app/css/login.css' %}">
+</head>
+<body>
+<main class="login-form">
+    <div class="container">
+        <div class="login-header">Login</div>
+        <div class="login-body">
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="login-infor">
+                    <label for="username" class="login-infor-text">Username</label>
+                    <input type="text" id="username" class="login-infor-input" name="username" required autofocus>
+                </div>
+                <div class="login-infor">
+                    <label for="password" class="login-infor-text">Password</label>
+                    <input type="password" id="password" class="login-infor-input" name="password" required>
+                </div>
+
+                <div class="login-btn">
+                    <a href="#" class="login-btn-text">
+                        Forgot Your Password?
+                    </a>
+                    <a href="/register" class="login-btn-text">
+                        Register
+                    </a>
+                    <button type="submit" class="login-btn-login">
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+{% endblock login_content %}

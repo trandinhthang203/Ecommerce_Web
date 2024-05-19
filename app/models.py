@@ -1,6 +1,34 @@
 from django.db import models
 
 # Create your models here.
+# Định nghĩa class Account
+from django.db import models
+from django.contrib.auth.hashers import make_password
+
+class Account(models.Model):
+    ROLE_CHOICES = (
+        ('admin', 'Admin'),
+        ('user', 'User'),
+    )
+    id = models.AutoField(primary_key=True)  
+    username = models.CharField(max_length=100, unique=True)
+    password = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')  # Sử dụng default để gán giá trị mặc định
+
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+class DetailAccount(models.Model):
+    id = models.AutoField(primary_key=True)  
+    name = models.CharField(max_length=100)
+    sex = models.CharField(max_length=10)
+    address = models.CharField(max_length=255)
+    phone = models.CharField(max_length=10)
+    id_account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name='detail')
+
+
 # Định nghĩa class Product
 class Product(models.Model):
     STATUS_CHOICES = [
