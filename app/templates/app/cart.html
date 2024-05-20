@@ -4,23 +4,24 @@
 <div class="row" style="padding: 50px;">
 	<div class="col-lg-12">
 		<div class="box-element">
-
 			<a class="btn btn-outline-dark" href="{% url 'home' %}">&#x2190; Tiếp tục mua sắm</a>
-
 			<br>
 			<br>
 			<table class="table">
 				<tr>
-					<th><h5>Số lượng trong giỏ hàng: <strong>3</strong></h5></th>
-					<th><h5>Tổng tiền:<strong> $42</strong></h5></th>
 					<th>
-						<a style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Thanh toán</a>
+						<h5>Số lượng trong giỏ hàng: <strong id="total-quantity">0</strong></h5>
+					</th>
+					<th>
+						<h5>Tổng tiền: <strong id="total-price">0 VNĐ</strong></h5>
+					</th>
+					<th>
+						<a style="float:right; margin:5px;" class="btn btn-success" href="{% url 'checkout' %}">Thanh
+							toán</a>
 					</th>
 				</tr>
 			</table>
-
 		</div>
-
 		<br>
 		<div class="box-element">
 			<table class="table table-striped">
@@ -33,23 +34,116 @@
 					</tr>
 				</thead>
 				<tbody>
+					{% for item in items %}
 					<tr>
-						<td><img class="row-image" src="../../static/app/images/cow-milk.png" width="40px" height="40px"> Product 1</td>
-						<td>$20</td>
+						<td><img class="row-image" src="{{item.product.image.url}}" width="40px" height="40px">
+							{{item.product.name}}</td>
+						<td class="price">{{ item.product.price }} đ</td>
 						<td>
 							<div class="d-inline-flex align-items-center">
-								<p class="mb-0" style="margin-right: 15px;">2</p>
+								<p class="quantity mb-0" style="margin-right: 15px;">{{ item.quantity }}</p>
 								<div class="ml-2" style="display: flex; flex-direction: column; align-items: center;">
-									<img class="chg-quantity" src="{% static 'app/images/arrow-up.png' %}" width="20px" height="20px" style="margin-bottom: 5px;">
-									<img class="chg-quantity" src="{% static 'app/images/arrow-down.png' %}" width="20px" height="20px">
+									<img class="chg-quantity chg-up" src="{% static 'app/images/arrow-up.png' %}"
+										width="20px" height="20px" style="margin-bottom: 5px;">
+									<img class="chg-quantity chg-down" src="{% static 'app/images/arrow-down.png' %}"
+										width="20px" height="20px">
 								</div>
 							</div>
 						</td>
-						<td>$32</td>
+						<td class="total-price"></td>
 					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 	</div>
 </div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		let totalQuantity = 0;
+		let totalPrice = 0;
+
+		document.querySelectorAll('tbody tr').forEach(function (row) {
+			const priceElement = row.querySelector('.price');
+			const quantityElement = row.querySelector('.quantity');
+			const totalPriceElement = row.querySelector('.total-price');
+
+			if (priceElement && quantityElement && totalPriceElement) {
+				const price = parseFloat(priceElement.textContent.replace(/,/g, ''));
+				const quantity = parseInt(quantityElement.textContent);
+
+				if (!isNaN(price) && !isNaN(quantity)) {
+					const itemTotalPrice = price * quantity;
+					totalPriceElement.textContent = `${formatCurrency(itemTotalPrice)} đ`;
+
+					totalQuantity += quantity;
+					totalPrice += itemTotalPrice;
+				}
+			}
+		});
+
+		document.getElementById('total-quantity').textContent = totalQuantity;
+		document.getElementById('total-price').textContent = `${formatCurrency(totalPrice)} đ`;
+
+		// Add event listeners to the arrow buttons
+		document.querySelectorAll('.chg-up').forEach(function (button) {
+			button.addEventListener('click', function () {
+				const row = this.closest('tr');
+				const quantityElement = row.querySelector('.quantity');
+				const priceElement = row.querySelector('.price');
+				const totalPriceElement = row.querySelector('.total-price');
+
+				let quantity = parseInt(quantityElement.textContent);
+				let price = parseFloat(priceElement.textContent.replace(/,/g, ''));
+
+				if (!isNaN(quantity) && !isNaN(price)) {
+					quantity++;
+					quantityElement.textContent = quantity;
+
+					const itemTotalPrice = price * quantity;
+					totalPriceElement.textContent = `${formatCurrency(itemTotalPrice)} đ`;
+
+					totalQuantity++;
+					totalPrice += price;
+					document.getElementById('total-quantity').textContent = totalQuantity;
+					document.getElementById('total-price').textContent = `${formatCurrency(totalPrice)} đ`;
+				}
+			});
+		});
+
+		document.querySelectorAll('.chg-down').forEach(function (button) {
+			button.addEventListener('click', function () {
+				const row = this.closest('tr');
+				const quantityElement = row.querySelector('.quantity');
+				const priceElement = row.querySelector('.price');
+				const totalPriceElement = row.querySelector('.total-price');
+
+				let quantity = parseInt(quantityElement.textContent);
+				let price = parseFloat(priceElement.textContent.replace(/,/g, ''));
+
+				if (!isNaN(quantity) && !isNaN(price)) {
+					if (quantity > 1) {
+						quantity--;
+						quantityElement.textContent = quantity;
+
+						const itemTotalPrice = price * quantity;
+						totalPriceElement.textContent = `${formatCurrency(itemTotalPrice)} đ`;
+
+						totalQuantity--;
+						totalPrice -= price;
+						document.getElementById('total-quantity').textContent = totalQuantity;
+						document.getElementById('total-price').textContent = `${formatCurrency(totalPrice)} đ`;
+					}
+				}
+			});
+		});
+	});
+
+	function formatCurrency(number) {
+		return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	}
+</script>
+
+
 {% endblock cart_content %}

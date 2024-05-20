@@ -54,7 +54,7 @@
                     </div>
                 </div>
 
-                <input id="form-button" class="btn btn-success btn-block" type="submit" value="Thanh toán">
+                <input id="form-button" class="btn btn-success btn-block" type="submit" value="In hóa đơn">
             </form>
         </div>
     </div>
@@ -64,21 +64,53 @@
             <a class="btn btn-outline-dark mb-3" href="{% url 'cart' %}">&#x2190; Quay lại giỏ hàng</a>
             <h3>Đơn hàng thanh toán</h3>
             <hr>
-            <div class="cart-row mb-3" style="display: flex; margin-top: 20px; align-items: center">
-                <div class="col-2"><img class="row-image" src="{% static 'app/images/placeholder.png' %}" width="100px"
-                        height="100px"></div>
+            {% for item in items %}
+            <div class="cart-row mb-3" style="display: flex; margin-top: 20px; align-items: center"
+                data-price="{{ item.product.price }}" data-quantity="{{ item.quantity }}">
+                <div class="col-2">
+                    <img class="row-image" src="{{item.product.image.url}}" width="100px" height="100px">
+                </div>
                 <div class="col-6">
-                    <p class="mb-0">Product 1</p>
+                    <p class="mb-0">{{item.product.name}}</p>
                 </div>
                 <div class="col-2">
-                    <p class="mb-0">$20.00</p>
+                    <p class="mb-0 price">{{item.product.price}}</p>
                 </div>
                 <div class="col-2">
-                    <p class="mb-0">x2</p>
+                    <p class="mb-0 quantity">x{{item.quantity}}</p>
                 </div>
             </div>
-            <h5>Thanh toán: $4</h5>
+            {% endfor %}
+            <h5 style="color: red;"><strong>Thanh toán: <span id="total-amount">0</span></strong></h5>
         </div>
     </div>
+
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let totalPrice = 0;
+
+        document.querySelectorAll('.cart-row').forEach(function (row) {
+            const priceElement = row.querySelector('.price');
+            const quantityElement = row.querySelector('.quantity');
+
+            if (priceElement && quantityElement) {
+                const price = parseFloat(priceElement.textContent.replace(/,/g, ''));
+                const quantity = parseInt(quantityElement.textContent.replace('x', ''));
+
+                if (!isNaN(price) && !isNaN(quantity)) {
+                    totalPrice += price * quantity;
+                }
+            }
+        });
+
+        document.getElementById('total-amount').textContent = `${formatCurrency(totalPrice)} đ`;
+    });
+
+    function formatCurrency(number) {
+        return number.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+</script>
+
+
 {% endblock content_checkout %}
