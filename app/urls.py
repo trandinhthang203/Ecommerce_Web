@@ -14,6 +14,10 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('login/', views.login, name="login"),
     path('logout/', views.logout, name="logout"),
+    path('account_list/', views.account_list,name="account_list"),
+    path('accounts/update/<int:id>/', views.account_update, name='account_update'),
+    path('account_create/', views.account_create,name="account_create"),
+    
 ]
 
-urlpatterns = urlpatterns + static(settings.MEDIA_URL   , document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL   , document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,8 @@
 from django.contrib import auth
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .models import Account,DetailAccount, Product
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
@@ -65,6 +66,20 @@ def login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        
+        # Kiểm tra tài khoản có tồn tại không
+        try:
+            account = Account.objects.get(username=username)
+        except Account.DoesNotExist:
+            context = {'error': 'Tên đăng nhập hoặc mật khẩu không hợp lệ'}
+            return render(request, 'app/login.html', context)
+        
+        if account.status == 'locked':
+            # Nếu tài khoản bị khóa, trả về thông báo tài khoản bị khóa
+            context = {'error': 'Tài khoản của bạn đã bị khóa.'}
+            return render(request, 'app/login.html', context)
+        
+        # Xác thực tài khoản và đăng nhập
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
@@ -115,3 +130,105 @@ def home(request):
 def logout(request):
     auth_logout(request)
     return redirect('home')
+
+
+def account_list(request):
+    # Lấy tất cả thông tin tài khoản
+    accounts = Account.objects.all()
+
+    # Tạo danh sách chứa thông tin chi tiết tài khoản kèm theo thông tin account
+    account_details = []
+    for account in accounts:
+        try:
+            detail = account.detail  # Sử dụng related_name để lấy thông tin chi tiết tài khoản
+        except DetailAccount.DoesNotExist:
+            detail = None
+        account_details.append({
+            'account': account,
+            'detail': detail
+        })
+
+    # Truyền thông tin vào template
+    context = {
+        'account_details': account_details,
+    }
+    return render(request, 'app/account_list.html', context)
+
+def account_update(request, id):
+    account = get_object_or_404(Account, id=id)
+    detail_account = account.detail if hasattr(account, 'detail') else None
+    
+    if request.method == "POST":
+        account.username = request.POST.get('username')
+        account.email = request.POST.get('email')
+        account.status = request.POST.get('status')
+        account.role = request.POST.get('role')
+
+        if detail_account:
+            detail_account.name = request.POST.get('name')
+            detail_account.sex = request.POST.get('sex')
+            detail_account.address = request.POST.get('address')
+            detail_account.phone = request.POST.get('phone')
+            detail_account.save()
+        else:
+            detail_account = DetailAccount(
+                id_account=account,
+                name=request.POST.get('name'),
+                sex=request.POST.get('sex'),
+                address=request.POST.get('address'),
+                phone=request.POST.get('phone')
+            )
+            detail_account.save()
+
+        account.save()
+        messages.success(request, 'Tài khoản đã được cập nhật thành công!')
+        return redirect('account_list')
+    
+    context = {
+        'account': account,
+        'detail_account': detail_account,
+    }
+    return render(request, 'app/account_update.html', context)
+
+def account_create(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+        name = request.POST['name']
+        sex = request.POST['sex']
+        address = request.POST['address']
+        phone = request.POST['phone']
+        status = request.POST['status']
+        role = request.POST['role']
+
+        # Kiểm tra mật khẩu và mật khẩu xác nhận
+        if password != confirm_password:
+            messages.error(request, 'Mật khẩu không khớp.')
+            return redirect('account_create')
+
+        # Tạo tài khoản Django User và đặt mật khẩu
+        user = User.objects.create(username=username, email=email)
+        user.set_password(password)  # Đặt mật khẩu
+        user.save()
+
+        # Tạo tài khoản
+        account = Account.objects.create(username=username, email=email, password=password, status=status, role=role)
+        account.save()
+
+        # Tạo thông tin chi tiết tài khoản
+        detail_account = DetailAccount.objects.create(name=name, sex=sex, address=address, phone=phone, id_account=account)
+        detail_account.save()
+
+        # Hiển thị thông báo thành công và chuyển hướng đến trang account_list
+        messages.success(request, 'Tài khoản đã được tạo thành công!')
+        return redirect('account_list')
+
+    context = {
+        'ROLE_CHOICES': Account.ROLE_CHOICES,
+        'STATUS_CHOICES': Account.STATUS_CHOICES,
+    }
+    
+    return render(request, 'app/account_create.html', context)
+

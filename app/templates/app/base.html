@@ -38,7 +38,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                        <a class="nav-link active" aria-current="page" href="/">Trang chủ</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -57,6 +57,7 @@
                     <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Liên hệ</a>
                     </li>
+                    
                 </ul>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -72,11 +73,12 @@
                                 {{ user.username }}
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Đơn hàng</a></li>
-                                <li><a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a></li>
                                 {% if user.account_role == 'admin' %}
                                     <li><a class="dropdown-item" href="/list/">Quản lí sản phẩm</a></li>
+                                    <li><a class="dropdown-item" href="/account_list/">Quản lí tài khoản</a></li>
                                 {% endif %}
+                                <li><a class="dropdown-item" href="#">Đơn hàng</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Đăng xuất</a></li>
                             </ul>
                         </li>
                     {% else %}
@@ -88,6 +90,9 @@
                         </li>
                     {% endif %}
                 </ul>
+                <li class="nav-link">
+                    <a class="dropdown-item" href="/cart">Giỏ hàng</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -95,8 +100,16 @@
     {% block main-content %} {% endblock main-content %}
     {% block cart_content %} {% endblock cart_content %}
     {% block content_checkout %} {% endblock content_checkout %}
+    {% block product_create %} {% endblock product_create %}
+    {% block product_list %} {% endblock product_list %}
+    {% block product_update %}{% endblock product_update %}
     {% block login_content %} {% endblock login_content %}
     {% block register_content %} {% endblock register_content %}
+    {% block account_list %} {% endblock account_list %}
+    {% block account_update %} {% endblock account_update %}
+    {% block account_create %} {% endblock account_create %}
+    {% block account_detail %} {% endblock account_detail %}
+
 
 
     <footer class="container--fluid bg-success text-center fixed-bottom p-2 mt-5">

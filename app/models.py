@@ -5,20 +5,30 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
+from django.db import models
+from django.contrib.auth.hashers import make_password
+
 class Account(models.Model):
     ROLE_CHOICES = (
         ('admin', 'Admin'),
         ('user', 'User'),
     )
+    STATUS_CHOICES = (
+        ('active', 'Active'),
+        ('locked', 'Locked'),
+    )
     id = models.AutoField(primary_key=True)  
     username = models.CharField(max_length=100, unique=True)
     password = models.CharField(max_length=100)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')  # Sử dụng default để gán giá trị mặc định
 
     def save(self, *args, **kwargs):
+        # Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
         self.password = make_password(self.password)
         super().save(*args, **kwargs)
+
 
 class DetailAccount(models.Model):
     id = models.AutoField(primary_key=True)  

@@ -19,6 +19,7 @@ body {
     border: 1px solid black;
 }
 .register-body{
+    padding-top: 25px;
     border: 1px solid black;
 }
 .register-infor {
@@ -26,6 +27,7 @@ body {
     font-size: 20px;
     margin-top: 16px;
     margin-left: 5%;
+    margin-right: 5%;
 }
 .register-infor-text{
     width: 15%;
@@ -61,4 +63,15 @@ border-color: rgb(227, 110, 227);
 .register-btn-register:hover{
     background-color: rgb(227, 110, 227);
     color: white;
+}
+.register-btn-register{
+    background-color: hsl(211, 59%, 52%);
+}
+.register-btn-register:hover{
+    background-color: rgb(227, 110, 227);
+    color: white;
+}
+.register-infor-input-password{
+    width: 72%;
+    margin-right: 15px;
 }

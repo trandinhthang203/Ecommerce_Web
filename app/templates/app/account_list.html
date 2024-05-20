@@ -1,0 +1,180 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block account_list %} 
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Account List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn-account {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-account:hover {
+            background-color: #0056b3;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn-account-list{
+            display:flex;
+            justify-content: space-between;
+        }
+        .btn-account-header {
+            text-decoration: none;
+            color: black;
+            background-color: #007bff;
+            font-size: 20px;
+            padding: 10px;
+            width: 120px;
+            text-align: center;
+            border-radius: 4px;
+        }
+        .btn-secondary{
+            background-color: rgb(227, 110, 227);
+        }
+    </style>
+</head>
+<body>
+<main class="main-content">
+    <div class="container">
+        <h1>Account List</h1>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="btn-account-list">
+            <a href="/" class="btn-account-header btn-secondary">Quay lại</a>
+            <a href="{% url 'account_create' %}" class="btn-account-header btn-primary">Tạo mới</a>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Name</th>
+                    <th>Sex</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account_detail in account_details %}
+                    <tr>
+                        <td>{{ account_detail.account.id }}</td>
+                        <td>{{ account_detail.account.username }}</td>
+                        <td>{{ account_detail.account.email }}</td>
+                        <td>{{ account_detail.account.status }}</td>
+                        <td>{{ account_detail.account.role }}</td>
+                        {% if account_detail.detail %}
+                            <td>{{ account_detail.detail.name }}</td>
+                            <td>{{ account_detail.detail.sex }}</td>
+                            <td>{{ account_detail.detail.address }}</td>
+                            <td>{{ account_detail.detail.phone }}</td>
+                        {% else %}
+                            <td colspan="4">No detail available</td>
+                        {% endif %}
+                        <td>
+                            <a href="{% url 'account_update' account_detail.account.id %}" class="btn-account btn-primary">Sửa</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+</body>
+</html>
+{% endblock account_list %}

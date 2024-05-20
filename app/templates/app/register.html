@@ -8,6 +8,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>register</title>
     <link rel="stylesheet" href="{% static 'app/css/register.css' %}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var togglePasswordButtons = document.querySelectorAll('.toggle-password');
+    
+            togglePasswordButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var passwordInput = this.previousElementSibling;
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.textContent = 'Ẩn';
+                    } else {
+                        passwordInput.type = 'password';
+                        this.textContent = 'Xem';
+                    }
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 <main class="register-form">
@@ -42,15 +60,17 @@
                 </div>
                 <div class="register-infor">
                     <label for="password" class="register-infor-text">Password</label>
-                    <input type="password" id="password" class="register-infor-input" name="password" required>
+                    <input type="password" id="password" class="register-infor-input register-infor-input-password" name="password" required>
+                    <button type="button" class="toggle-password">Xem</button>
                 </div>
                 <div class="register-infor">
-                    <label for="confirm_password" class="register-infor-text">Re-enter Password</label>
-                    <input type="password" id="confirm_password" class="register-infor-input" name="confirm_password" required>
+                    <label for="confirm_password" class="register-infor-text">Re Password</label>
+                    <input type="password" id="confirm_password" class="register-infor-input register-infor-input-password" name="confirm_password" required>
+                    <button type="button" class="toggle-password">Xem</button>
                 </div>
 
                 <div class="register-btn">
-                    <input type="submit" class="register-btn-register" name="Register">
+                    <input type="submit" class="register-btn-register" name="Register" value="Register">
                 </div> 
             </form>
         </div>
