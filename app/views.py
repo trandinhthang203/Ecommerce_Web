@@ -7,6 +7,7 @@ from .models import Account,DetailAccount, Product
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 # Create your views here.
 def home(request):
     context = {}
@@ -231,4 +232,40 @@ def account_create(request):
     }
     
     return render(request, 'app/account_create.html', context)
+
+def check_username(request):
+    username = request.GET.get('username', None)
+    data = {
+        'exists': User.objects.filter(username__iexact=username).exists()
+    }
+    return JsonResponse(data)
+
+def check_email(request):
+    email = request.GET.get('email', None)
+    data = {
+        'exists': User.objects.filter(email__iexact=email).exists()
+    }
+    return JsonResponse(data)
+
+def check_name(request):
+    name = request.GET.get('name', None)
+    data = {
+        'exists': DetailAccount.objects.filter(name__iexact=name).exists()
+    }
+    return JsonResponse(data)
+
+def check_phone(request):
+    phone = request.GET.get('phone', None)
+    data = {
+        'exists': DetailAccount.objects.filter(phone__iexact=phone).exists()
+    }
+    return JsonResponse(data)
+
+def check_username_existence(request):
+    username = request.GET.get('username', None)
+    if username is not None:
+        user_exists = Account.objects.filter(username=username).exists()
+        return JsonResponse({'exists': user_exists})
+    else:
+        return JsonResponse({'exists': False})
 

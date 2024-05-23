@@ -41,15 +41,16 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
-            width: 10%;
+            width: 130px;
         }
 
         .form-group input, .form-group select {
-            width: 100%;
+            max-width: 830px;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            margin: 0;
         }
 
         .btn-account {
@@ -67,10 +68,12 @@
         .btn-account:hover {
             background-color: #0056b3;
         }
+
         .form-group-btn {
             display: flex;
             justify-content: space-between;
         }
+
         .btn-account-retail {
             text-decoration: none;
             color: black;
@@ -81,15 +84,120 @@
             text-align: center;
             border-radius: 4px;
         }
+
         .btn-back {
             background-color: rgb(227, 110, 227);
         }
+
         h6 {
             text-align: center;
             margin-left: 10%;
             font-size: 12px;
         }
+
+        .register-infor-input-password {
+            width: 72%;
+            margin-right: 15px;
+            margin-left: 11px;
+        }
+
+        .toggle-password {
+            min-width: 54px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+            togglePasswordButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var passwordInput = this.previousElementSibling;
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        this.textContent = 'Ẩn';
+                    } else {
+                        passwordInput.type = 'password';
+                        this.textContent = 'Xem';
+                    }
+                });
+            });
+
+            var usernameInput = document.getElementById('username');
+            var emailInput = document.getElementById('email');
+            var nameInput = document.getElementById('name');
+            var phoneInput = document.getElementById('phone');
+            var usernameError = document.getElementById('username-error');
+            var emailError = document.getElementById('email-error');
+            var nameError = document.getElementById('name-error');
+            var phoneError = document.getElementById('phone-error');
+
+            usernameInput.addEventListener('blur', function () {
+                var username = usernameInput.value;
+                if (username) {
+                    fetch("{% url 'check_username' %}?username=" + username)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                usernameError.style.display = 'block';
+                            } else {
+                                usernameError.style.display = 'none';
+                            }
+                        });
+                }
+            });
+
+            emailInput.addEventListener('blur', function () {
+                var email = emailInput.value;
+                if (email) {
+                    fetch("{% url 'check_email' %}?email=" + email)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                emailError.style.display = 'block';
+                            } else {
+                                emailError.style.display = 'none';
+                            }
+                        });
+                }
+            });
+
+            nameInput.addEventListener('blur', function () {
+                var name = nameInput.value;
+                if (name) {
+                    fetch("{% url 'check_name' %}?name=" + name)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                nameError.style.display = 'block';
+                            } else {
+                                nameError.style.display = 'none';
+                            }
+                        });
+                }
+            });
+
+            phoneInput.addEventListener('blur', function () {
+                var phone = phoneInput.value;
+                if (phone) {
+                    fetch("{% url 'check_phone' %}?phone=" + phone)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                phoneError.style.display = 'block';
+                            } else {
+                                phoneError.style.display = 'none';
+                            }
+                        });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <main class="main-content">
@@ -97,28 +205,33 @@
         <h1>Create Account</h1>
         <form method="post">
             {% csrf_token %}
+            {% csrf_token %}
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" class="form-control" required>
+                <span id="username-error" class="error-message">Username already taken.</span>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" class="form-control" required>
+                <span id="email-error" class="error-message">Email already taken.</span>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <label for="password" class="register-infor-text">Password</label>
+                <input type="password" id="password" class="form-control register-infor-input register-infor-input-password" name="password" required>
+                <button type="button" class="toggle-password">Xem</button>
             </div>
             <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                <label for="confirm_password" class="register-infor-text">Re Password</label>
+                <input type="password" id="confirm_password" class="form-control register-infor-input register-infor-input-password" name="confirm_password" required>
+                <button type="button" class="toggle-password">Xem</button>
             </div>
             <h6>Status = Locked ~ tài khoản bị khóa</h6>
             <div class="form-group">
                 <label for="status">Status</label>
                 <select id="status" name="status" class="form-control">
                     {% for value, label in STATUS_CHOICES %}
-                        <option value="{{ value }}">{{ label }}</option>
+                    <option value="{{ value }}">{{ label }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -126,13 +239,14 @@
                 <label for="role">Role</label>
                 <select id="role" name="role" class="form-control">
                     {% for value, label in ROLE_CHOICES %}
-                        <option value="{{ value }}">{{ label }}</option>
+                    <option value="{{ value }}">{{ label }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
                 <label for="name">Name</label>
                 <input type="text" id="name" name="name" class="form-control" required>
+                <span id="name-error" class="error-message">Name already taken.</span>
             </div>
             <div class="form-group">
                 <label for="sex">Sex</label>
@@ -145,6 +259,7 @@
             <div class="form-group">
                 <label for="phone">Phone</label>
                 <input type="text" id="phone" name="phone" class="form-control" required>
+                <span id="phone-error" class="error-message">Phone number already taken.</span>
             </div>
             <div class="form-group form-group-btn">
                 <a href="{% url 'account_list' %}" class="btn-back btn-account-retail">Quay lại</a>
